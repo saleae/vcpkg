@@ -60,6 +60,10 @@ endmacro()
 macro(z_vcpkg_extract_cpp_flags_and_set_cflags_and_cxxflags flag_suffix)
     string(REGEX MATCHALL "( |^)(-D|-isysroot|--sysroot=|-isystem|-m?[Aa][Rr][Cc][Hh]|--target=|-target) ?[^ ]+" CPPFLAGS_${flag_suffix} "${VCPKG_DETECTED_CMAKE_C_FLAGS_${flag_suffix}}")
     string(REGEX MATCHALL "( |^)(-D|-isysroot|--sysroot=|-isystem|-m?[Aa][Rr][Cc][Hh]|--target=|-target) ?[^ ]+" CXXPPFLAGS_${flag_suffix} "${VCPKG_DETECTED_CMAKE_CXX_FLAGS_${flag_suffix}}")
+
+    # Escape "+" in any of the include paths for use in the regex below.
+    string(REPLACE "\+" "\\+" CXXPPFLAGS_${flag_suffix} CXXPPFLAGS_${flag_suffix})
+
     list(JOIN CXXPPFLAGS_${flag_suffix} "|" CXXREGEX)
     if(CXXREGEX)
         list(FILTER CPPFLAGS_${flag_suffix} INCLUDE REGEX "(${CXXREGEX})")
